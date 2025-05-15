@@ -54,7 +54,7 @@ func AnalyzeResume(c *gin.Context) {
     }
 
     // ✅ Call Python script
-    cmd := exec.Command("python", "extract_text.py", tempFilePath)
+    cmd := exec.Command("python3", "./extract_text.py", tempFilePath)
     output, err := cmd.CombinedOutput()
     if err != nil {
         c.JSON(http.StatusInternalServerError, gin.H{"error": "Python error: " + err.Error(), "details": string(output)})
