@@ -32,16 +32,27 @@ func main() {
 	}
 	r.Use(cors.New(corsConfig))
 
-	r.OPTIONS("/analyze", func(c *gin.Context) {
-		c.Status(200)
+	// Serve static frontend files
+	r.Static("/", "./dist")
+
+	// React Router fallback
+	r.NoRoute(func(c *gin.Context) {
+		c.File("./dist/index.html")
 	})
 
+	// Health check
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"status": "ok",
 		})
 	})
 
+	// Preflight request for /analyze
+	r.OPTIONS("/analyze", func(c *gin.Context) {
+		c.Status(200)
+	})
+
+	// Main API route
 	r.POST("/analyze", handlers.AnalyzeResume)
 
 	r.SetTrustedProxies(nil)
