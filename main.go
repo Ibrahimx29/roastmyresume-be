@@ -2,8 +2,8 @@ package main
 
 import (
 	"log"
-	"os"
 	"roastmyresume/handlers"
+	"roastmyresume/utils"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -11,12 +11,11 @@ import (
 )
 
 func main() {
-    r := gin.Default()
+	utils.LoadEnv()
 
-    allowedOrigin := os.Getenv("ALLOWED_ORIGIN")
-	if allowedOrigin == "" {
-		allowedOrigin = "http://localhost:5173"
-	}
+	r := gin.Default()
+
+	allowedOrigin := utils.GetEnv("ALLOWED_ORIGIN", "http://localhost:5173")
 	log.Printf("Configuring CORS for origin: %s", allowedOrigin)
 
 	corsConfig := cors.Config{
@@ -29,6 +28,6 @@ func main() {
 	}
 	r.Use(cors.New(corsConfig))
 
-    r.POST("/analyze", handlers.AnalyzeResume)
-    r.Run(":8080") // starts server at http://localhost:8080
+	r.POST("/analyze", handlers.AnalyzeResume)
+	r.Run(":" + utils.GetEnv("PORT", "8080"))
 }
