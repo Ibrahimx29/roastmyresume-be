@@ -13,6 +13,8 @@ import (
 func main() {
 	r := gin.Default()
 
+	gin.SetMode(gin.ReleaseMode)
+
 	allowedOrigin := os.Getenv("ALLOWED_ORIGIN")
 	if allowedOrigin == "" {
 		allowedOrigin = "http://localhost:5173"
