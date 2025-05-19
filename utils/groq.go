@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/joho/godotenv"
 )
@@ -50,7 +51,7 @@ func CallGroq(prompt string) (string, error) {
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+GetEnv("GROQ_API_KEY", ""))
+	req.Header.Set("Authorization", "Bearer "+ os.Getenv("GROQ_API_KEY"))
 
 	client := &http.Client{}
 	resp, err := client.Do(req)

@@ -29,6 +29,6 @@ COPY tmp/ /app/tmp/
 # Add permissions if needed (useful on Railway)
 RUN chmod +x /app/app
 
-EXPOSE 8080
+EXPOSE 80
 
 CMD ["./app"]

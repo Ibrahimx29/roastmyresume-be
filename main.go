@@ -2,8 +2,8 @@ package main
 
 import (
 	"log"
+	"os"
 	"roastmyresume/handlers"
-	"roastmyresume/utils"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -11,15 +11,12 @@ import (
 )
 
 func main() {
-	utils.LoadEnv()
-
-	if utils.GetEnv("GIN_MODE", "debug") == "release" {
-		gin.SetMode(gin.ReleaseMode)
-	}
-
 	r := gin.Default()
 
-	allowedOrigin := utils.GetEnv("ALLOWED_ORIGIN", "https://roast-myresume.vercel.app")
+	allowedOrigin := os.Getenv("ALLOWED_ORIGIN")
+	if allowedOrigin == "" {
+		allowedOrigin = "http://localhost:5173"
+	}
 	log.Printf("Configuring CORS for origin: %s", allowedOrigin)
 
 	corsConfig := cors.Config{
@@ -31,14 +28,6 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}
 	r.Use(cors.New(corsConfig))
-
-	// Serve static frontend files
-	r.Static("/", "./dist")
-
-	// React Router fallback
-	r.NoRoute(func(c *gin.Context) {
-		c.File("./dist/index.html")
-	})
 
 	// Health check
 	r.GET("/health", func(c *gin.Context) {
@@ -57,7 +46,10 @@ func main() {
 
 	r.SetTrustedProxies(nil)
 
-	port := utils.GetEnv("PORT", "8080")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "80"
+	}
 	log.Printf("Starting server on port %s", port)
 	r.Run(":" + port)
 }
